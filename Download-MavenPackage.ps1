@@ -3,6 +3,10 @@ param (
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string]
+    $Organization,
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
     $Project,
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
@@ -51,6 +55,6 @@ function GetAccessToken () {
 $ErrorActionPreference = "Stop"
 
 $token = GetAccessToken
-$uri = "https://pkgs.dev.azure.com/$Project/_apis/packaging/feeds/$FeedId/maven/packages/$GroupId/$ArtifactId/versions/$Version/content?api-version=5.1-preview.1"
+$uri = "https://pkgs.dev.azure.com/$Organization/$Project/_apis/packaging/feeds/$FeedId/maven/packages/$GroupId/$ArtifactId/versions/$Version/content?api-version=5.1-preview.1"
 
 Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = "Bearer $token" } -OutFile "$OutputDirectory\$FileName"	
