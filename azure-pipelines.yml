@@ -10,7 +10,8 @@ pool:
   vmImage: windows-latest
 
 variables:
-  PROJECT: 'vinima'
+  ORG: 'vinima'
+  PROJECT: 'My Work'
   FEED_ID: '8aec59e1-6117-46e0-9b4b-148f6a7eecc7'
   GROUP_ID: 'MyGroup'
   ARTIFACT_ID: 'MyGroup'
@@ -23,4 +24,4 @@ steps:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
     filePath: 'Download-MavenPackage.ps1'
-    arguments: '-Project $(PROJECT) -FeedId $(FEED_ID) -GroupId $(GROUP_ID) -ArtifactId $(ARTIFACT_ID) -Version $(VERSION) -FileName $(FILENAME) -OutputDirectory $(Build.ArtifactStagingDirectory)'
+    arguments: '-Organization $(ORG) -Project $(PROJECT) -FeedId $(FEED_ID) -GroupId $(GROUP_ID) -ArtifactId $(ARTIFACT_ID) -Version $(VERSION) -FileName $(FILENAME) -OutputDirectory $(Build.ArtifactStagingDirectory)'
