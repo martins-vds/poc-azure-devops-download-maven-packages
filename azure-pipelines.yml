@@ -14,7 +14,7 @@ variables:
   PROJECT: 'My Work'
   FEED_ID: '8aec59e1-6117-46e0-9b4b-148f6a7eecc7'
   GROUP_ID: 'MyGroup'
-  ARTIFACT_ID: 'MyGroup'
+  ARTIFACT_ID: 'myFirstApp'
   VERSION: '1.0-SNAPSHOT'
   FILENAME: 'myFirstApp-1.0-20230508.222359-1.jar'
 
