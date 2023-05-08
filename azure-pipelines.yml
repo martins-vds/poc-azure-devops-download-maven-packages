@@ -24,4 +24,4 @@ steps:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
     filePath: 'Download-MavenPackage.ps1'
-    arguments: '-Organization $(ORG) -Project $(PROJECT) -FeedId $(FEED_ID) -GroupId $(GROUP_ID) -ArtifactId $(ARTIFACT_ID) -Version $(VERSION) -FileName $(FILENAME) -OutputDirectory $(Build.ArtifactStagingDirectory)'
+    arguments: '-Organization "$(ORG)" -Project "$(PROJECT)" -FeedId "$(FEED_ID)" -GroupId "$(GROUP_ID)" -ArtifactId "$(ARTIFACT_ID)" -Version "$(VERSION)" -FileName "$(FILENAME)" -OutputDirectory "$(Build.ArtifactStagingDirectory)"'
