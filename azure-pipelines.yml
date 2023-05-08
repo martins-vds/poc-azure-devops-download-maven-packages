@@ -1,0 +1,24 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- task: PowerShell@2
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    PROJECT: 'vinima'
+    FEED_ID: '8aec59e1-6117-46e0-9b4b-148f6a7eecc7'
+    GROUP_ID: 'MyGroup'
+    ARTIFACT_ID: 'MyGroup'
+    VERSION: '1.0-SNAPSHOT'
+    FILENAME: 'myFirstApp-1.0-20230508.222359-1.jar'
+  inputs:
+    filePath: 'Download-MavenPackage.ps1'
+    arguments: '-Project $(PROJECT) -FeedId $(FEED_ID) -GroupId $(GROUP_ID) -ArtifactId $(ARTIFACT_ID) -Version $(VERSION) -FileName $(FILENAME) -OutputDirectory $(Build.ArtifactStagingDirectory)'
