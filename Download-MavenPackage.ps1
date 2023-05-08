@@ -1,21 +1,27 @@
 [CmdletBinding()]
 param (
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string]
     $Project,
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string]
     $FeedId,
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string]
     $GroupId,
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string]
     $ArtifactId,
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string]
     $Version,
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string]
     $FileName,
     [Parameter(Mandatory)]
