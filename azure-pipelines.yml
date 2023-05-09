@@ -19,6 +19,7 @@ variables:
   ARTIFACT_ID: 'myFirstApp'
   VERSION: '1.0-SNAPSHOT'
   FILENAME: 'myFirstApp-1.0-20230508.222359-1.jar'
+  SERVER_URL: 'https://pkgs.dev.azure.com'
 
 steps:
 - task: PowerShell@2
@@ -26,7 +27,7 @@ steps:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
     filePath: 'Download-MavenPackage.ps1'
-    arguments: '-Organization "$(ORG)" -FeedId "$(FEED_ID)" -GroupId "$(GROUP_ID)" -ArtifactId "$(ARTIFACT_ID)" -Version "$(VERSION)" -FileName "$(FILENAME)" -OutputDirectory "$(System.ArtifactsDirectory)\powershell"'
+    arguments: '-Organization "$(ORG)" -FeedId "$(FEED_ID)" -GroupId "$(GROUP_ID)" -ArtifactId "$(ARTIFACT_ID)" -Version "$(VERSION)" -FileName "$(FILENAME)" -OutputDirectory "$(System.ArtifactsDirectory)\powershell" -ServerUrl "$(SERVER_URL)"'
 - task: DownloadPackage@1
   inputs:
     packageType: 'maven'
