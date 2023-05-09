@@ -74,12 +74,12 @@ function GetServerUrlOrFallback ($serverUrl, $fallback) {
     
     $serverUrl = $serverUrl.TrimEnd('/')
     
-    $serverUrl -match $urlPattern
+    $serverUrl -match $urlPattern | Out-Null
 
     $protocol = $Matches['protocol']
     $instance = $Matches['instance']
 
-    return "$($protocol)://$instance"
+    return "$($protocol)://$($instance)"
 }
 
 $ErrorActionPreference = "Stop"
