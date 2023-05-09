@@ -29,7 +29,11 @@ param (
     $OutputDirectory,
     [Parameter(Mandatory=$false)]
     [string]
-    $Token
+    $Token,
+    [Parameter(Mandatory=$false)]
+    [ValidatePattern("^(?<protocol>http(s)?)://(?<instance>[^/$]+(/[^/]+)*)(?<ending_slash>/?)|(?<empty_url>)$")]
+    [string]
+    $ServerUrl
 )
 
 function EncodeBase64 ($text) {
@@ -61,10 +65,27 @@ function ParseErrorMessage ($err) {
     return $json.message
 }
 
+function GetServerUrlOrFallback ($serverUrl, $fallback) {
+    $urlPattern = "^(?<protocol>http(s)?)://(?<instance>[^/$]+(/[^/]+)*)(?<ending_slash>/?)|(?<empty_url>)$"
+
+    if([string]::IsNullOrEmpty($serverUrl)) {
+        return $fallback
+    }
+    
+    $serverUrl = $serverUrl.TrimEnd('/')
+    
+    $serverUrl -match $urlPattern
+
+    $protocol = $Matches['protocol']
+    $instance = $Matches['instance']
+
+    return "$($protocol)://$instance"
+}
+
 $ErrorActionPreference = "Stop"
 
 $token = GetAccessTokenOrFallback $Token $env:SYSTEM_ACCESSTOKEN
-$uri = "https://pkgs.dev.azure.com/$Organization/_apis/packaging/feeds/$FeedId/maven/$GroupId/$ArtifactId/$Version/$FileName/content?api-version=7.0-preview.1"
+$uri = "$(GetServerUrlOrFallback $ServerUrl "https://pkgs.dev.azure.com")/$Organization/_apis/packaging/feeds/$FeedId/maven/$GroupId/$ArtifactId/$Version/$FileName/content?api-version=7.0-preview.1"
 
 EnsureOutputDirectoryExists $OutputDirectory
 
