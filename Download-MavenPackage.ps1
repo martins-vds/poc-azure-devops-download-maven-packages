@@ -25,36 +25,60 @@ param (
     [string]
     $FileName,
     [Parameter(Mandatory)]
-    [ValidateScript({
-        if (-Not ($_ | Test-Path) ) {
-            throw "File or folder does not exist"
-        }
-
-        if (-Not ($_ | Test-Path -PathType Container) ) {
-            throw "The OutputDirectory argument must be a folder. File paths are not allowed."
-        }
-
-        return $true 
-    })]
     [System.IO.FileInfo]
-    $OutputDirectory
+    $OutputDirectory,
+    [Parameter(Mandatory=$false)]
+    [string]
+    $Token
 )
 
-function GetAccessToken () {    
-    if (![string]::IsNullOrEmpty($env:SYSTEM_ACCESSTOKEN)) {
-        return $env:SYSTEM_ACCESSTOKEN
+function EncodeBase64 ($text) {
+    $bytes = [System.Text.Encoding]::ASCII.GetBytes($text)
+    $base64 = [System.Convert]::ToBase64String($bytes)
+    return $base64
+}
+
+function GetAccessTokenOrFallback ($token, $fallback) {
+    if (![string]::IsNullOrEmpty($token)) {
+        return EncodeBase64 ":$token"
+    }
+    
+    if (![string]::IsNullOrEmpty($fallback)) {
+        return $fallback
     }
 
-    throw "The environment variable SYSTEM_ACCESSTOKEN is missing. This variable is required to authenticate with Azure DevOps. Please make sure it is defined."
+    throw "Access token is missing. Either provide it through the '-Token' parameter or create the environment variable 'SYSTEM_ACCESSTOKEN'"
+}
+
+function EnsureOutputDirectoryExists ($outputDirectory) {
+    if (-Not (Test-Path $outputDirectory)) {
+        New-Item -Path $outputDirectory -ItemType Directory -Force | Out-Null
+    }
+}
+
+function ParseErrorMessage ($err) {
+    $json = $err | ConvertFrom-Json
+    return $json.message
 }
 
 $ErrorActionPreference = "Stop"
 
-$token = GetAccessToken
+$token = GetAccessTokenOrFallback $Token $env:SYSTEM_ACCESSTOKEN
 $uri = "https://pkgs.dev.azure.com/$Organization/_apis/packaging/feeds/$FeedId/maven/$GroupId/$ArtifactId/$Version/$FileName/content?api-version=7.0-preview.1"
 
-Write-Host "Downloading Maven package from '$uri'..." -ForegroundColor Blue
+EnsureOutputDirectoryExists $OutputDirectory
 
-Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = "Bearer $token" } -OutFile "$OutputDirectory\$FileName"	
+Write-Host "Downloading file '$FileName' from Maven package '$($GroupId)/$($ArtifactId)'..." -ForegroundColor Blue
+
+try {
+    Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = "Bearer $token" } -OutFile "$OutputDirectory\$FileName"	
+}catch [Microsoft.PowerShell.Commands.HttpResponseException] {
+    if ($_.Exception.Response.StatusCode -eq [System.Net.HttpStatusCode]::Unauthorized) {
+        Write-Host "Failed to download file '$FileName' from Maven package '$($GroupId)/$($ArtifactId)'. Reason: $(ParseErrorMessage $_.ErrorDetails.Message)" -ForegroundColor Red
+        exit 1
+    }
+
+    throw
+}
 
 Write-Host "Done." -ForegroundColor Green
