@@ -31,4 +31,5 @@ steps:
     view: 'dfb72d12-b87c-4f5b-bc1b-803c8412ede8'
     definition: '33e81c24-2b92-42ec-a191-a28b589b085d'
     version: '1.0-snapshot'
+    files: 'myFirstApp-1.0-20230508.222359-1.jar'
     downloadPath: '$(System.ArtifactsDirectory)'
