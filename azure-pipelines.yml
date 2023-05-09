@@ -9,12 +9,6 @@ trigger:
 pool:
   vmImage: windows-latest
 
-parameters:
-  - name: change-me
-    values:
-      - fdsa
-    default: fadfa
-    displayName: 'Change me'
 variables:
   ORG: 'vinima'
   FEED_ID: '8aec59e1-6117-46e0-9b4b-148f6a7eecc7'
