@@ -55,6 +55,6 @@ function GetAccessToken () {
 $ErrorActionPreference = "Stop"
 
 $token = GetAccessToken
-$uri = "https://pkgs.dev.azure.com/$Organization/$Project/_apis/packaging/feeds/$FeedId/maven/packages/$GroupId/$ArtifactId/versions/$Version/content?api-version=5.1-preview.1"
+$uri = "https://pkgs.dev.azure.com/$Organization/$Project/_apis/packaging/feeds/$FeedId/maven/$GroupId/$ArtifactId/$Version/content?api-version=7.0-preview.1"
 
 Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = "Bearer $token" } -OutFile "$OutputDirectory\$FileName"	
