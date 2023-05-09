@@ -57,4 +57,8 @@ $ErrorActionPreference = "Stop"
 $token = GetAccessToken
 $uri = "https://pkgs.dev.azure.com/$Organization/$Project/_apis/packaging/feeds/$FeedId/maven/$GroupId/$ArtifactId/$Version/content?api-version=7.0-preview.1"
 
+Write-Host "Downloading Maven package from '$uri'..." -ForegroundColor Blue
+
 Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = "Bearer $token" } -OutFile "$OutputDirectory\$FileName"	
+
+Write-Host "Done." -ForegroundColor Green
