@@ -7,10 +7,6 @@ param (
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string]
-    $Project,
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [string]
     $FeedId,
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
@@ -55,7 +51,7 @@ function GetAccessToken () {
 $ErrorActionPreference = "Stop"
 
 $token = GetAccessToken
-$uri = "https://pkgs.dev.azure.com/$Organization/$Project/_apis/packaging/feeds/$FeedId/maven/$GroupId/$ArtifactId/$Version/content?api-version=7.0-preview.1"
+$uri = "https://pkgs.dev.azure.com/$Organization/_apis/packaging/feeds/$FeedId/maven/$GroupId/$ArtifactId/$Version/$FileName/content?api-version=7.0-preview.1"
 
 Write-Host "Downloading Maven package from '$uri'..." -ForegroundColor Blue
 
