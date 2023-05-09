@@ -23,7 +23,7 @@ steps:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
     filePath: 'Download-MavenPackage.ps1'
-    arguments: '-Organization "$(ORG)" -FeedId "$(FEED_ID)" -GroupId "$(GROUP_ID)" -ArtifactId "$(ARTIFACT_ID)" -Version "$(VERSION)" -FileName "$(FILENAME)" -OutputDirectory "$(Build.ArtifactStagingDirectory)"'
+    arguments: '-Organization "$(ORG)" -FeedId "$(FEED_ID)" -GroupId "$(GROUP_ID)" -ArtifactId "$(ARTIFACT_ID)" -Version "$(VERSION)" -FileName "$(FILENAME)" -OutputDirectory "$(System.ArtifactsDirectory)\powershell"'
 - task: DownloadPackage@1
   inputs:
     packageType: 'maven'
@@ -32,4 +32,6 @@ steps:
     definition: '33e81c24-2b92-42ec-a191-a28b589b085d'
     version: '1.0-snapshot'
     files: 'myFirstApp-1.0-20230508.222359-1.jar'
-    downloadPath: '$(System.ArtifactsDirectory)'
+    downloadPath: '$(System.ArtifactsDirectory)\task'
+- publish: $(System.ArtifactsDirectory)
+  artifact: maven-$(FILENAME)
