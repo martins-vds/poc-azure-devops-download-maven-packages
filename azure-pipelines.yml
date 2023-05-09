@@ -24,3 +24,11 @@ steps:
   inputs:
     filePath: 'Download-MavenPackage.ps1'
     arguments: '-Organization "$(ORG)" -FeedId "$(FEED_ID)" -GroupId "$(GROUP_ID)" -ArtifactId "$(ARTIFACT_ID)" -Version "$(VERSION)" -FileName "$(FILENAME)" -OutputDirectory "$(Build.ArtifactStagingDirectory)"'
+- task: DownloadPackage@1
+  inputs:
+    packageType: 'maven'
+    feed: '/8aec59e1-6117-46e0-9b4b-148f6a7eecc7'
+    view: 'dfb72d12-b87c-4f5b-bc1b-803c8412ede8'
+    definition: '33e81c24-2b92-42ec-a191-a28b589b085d'
+    version: '1.0-snapshot'
+    downloadPath: '$(System.ArtifactsDirectory)'
