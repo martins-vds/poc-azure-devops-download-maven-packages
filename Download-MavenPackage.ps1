@@ -44,11 +44,11 @@ function EncodeBase64 ($text) {
 
 function GetAccessTokenOrFallback ($token, $fallback) {
     if (![string]::IsNullOrEmpty($token)) {
-        return EncodeBase64 ":$token"
+        return "Basic $(EncodeBase64 ":$token")"
     }
     
     if (![string]::IsNullOrEmpty($fallback)) {
-        return $fallback
+        return "Bearer $fallback"
     }
 
     throw "Access token is missing. Either provide it through the '-Token' parameter or create the environment variable 'SYSTEM_ACCESSTOKEN'"
@@ -92,7 +92,7 @@ EnsureOutputDirectoryExists $OutputDirectory
 Write-Host "Downloading file '$FileName' from Maven package '$($GroupId)/$($ArtifactId)'..." -ForegroundColor Blue
 
 try {
-    Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = "Bearer $token" } -OutFile "$OutputDirectory\$FileName"	
+    Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = $token } -OutFile "$OutputDirectory\$FileName"	
 }catch [Microsoft.PowerShell.Commands.HttpResponseException] {
     if ($_.Exception.Response.StatusCode -eq [System.Net.HttpStatusCode]::Unauthorized) {
         Write-Host "Failed to download file '$FileName' from Maven package '$($GroupId)/$($ArtifactId)'. Reason: $(ParseErrorMessage $_.ErrorDetails.Message)" -ForegroundColor Red
