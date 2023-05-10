@@ -92,7 +92,8 @@ EnsureOutputDirectoryExists $OutputDirectory
 Write-Host "Downloading file '$FileName' from Maven package '$($GroupId)/$($ArtifactId)'..." -ForegroundColor Blue
 
 try {
-    Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = $token } -OutFile "$OutputDirectory\$FileName"	
+    Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = $token } -OutFile "$OutputDirectory\$FileName"
+    Write-Host "Successfully downloaded file '$FileName' to directory '$OutputDirectory'." -ForegroundColor Green
 }catch [Microsoft.PowerShell.Commands.HttpResponseException] {
     if ($_.Exception.Response.StatusCode -eq [System.Net.HttpStatusCode]::Unauthorized) {
         Write-Host "Failed to download file '$FileName' from Maven package '$($GroupId)/$($ArtifactId)'. Reason: $(ParseErrorMessage $_.ErrorDetails.Message)" -ForegroundColor Red
