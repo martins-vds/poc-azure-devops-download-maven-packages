@@ -1,4 +1,4 @@
-# POC Azure Devops - Downloading Maven Packages using Powershell
+# Proof of Concept - How to download Maven packages from Azure Arficats using Powershell
 
 ## Prerequisites
 
