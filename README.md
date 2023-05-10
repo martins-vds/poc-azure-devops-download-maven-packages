@@ -1,4 +1,4 @@
-# Proof of Concept - How to download Maven packages from Azure Arficats using Powershell
+# Proof of Concept - How to download Maven packages from Azure Artifacts using Powershell
 
 ## Prerequisites
 
