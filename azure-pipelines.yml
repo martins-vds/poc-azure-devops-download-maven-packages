@@ -14,6 +14,9 @@ pool:
 
 variables:
   ORG: 'vinima'
+  # Project name or ID. Required for project-scoped feeds.
+  PROJECT: '' 
+  # Feed name or ID.
   FEED_ID: '8aec59e1-6117-46e0-9b4b-148f6a7eecc7'
   GROUP_ID: 'MyGroup'
   ARTIFACT_ID: 'myFirstApp'
@@ -28,7 +31,7 @@ steps:
   inputs:
     pwsh: true
     filePath: 'Download-MavenPackage.ps1'
-    arguments: '-Organization "$(ORG)" -FeedId "$(FEED_ID)" -GroupId "$(GROUP_ID)" -ArtifactId "$(ARTIFACT_ID)" -Version "$(VERSION)" -FileName "$(FILENAME)" -OutputDirectory "$(System.ArtifactsDirectory)\powershell" -ServerUrl "$(SERVER_URL)"'
+    arguments: '-Organization "$(ORG)" -ProjectId "$(PROJECT)" -FeedId "$(FEED_ID)" -GroupId "$(GROUP_ID)" -ArtifactId "$(ARTIFACT_ID)" -Version "$(VERSION)" -FileName "$(FILENAME)" -OutputDirectory "$(System.ArtifactsDirectory)\powershell" -ServerUrl "$(SERVER_URL)"'
 - task: DownloadPackage@1
   inputs:
     packageType: 'maven'
