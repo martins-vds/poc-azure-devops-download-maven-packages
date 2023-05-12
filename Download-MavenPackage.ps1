@@ -27,10 +27,10 @@ param (
     [Parameter(Mandatory)]
     [System.IO.FileInfo]
     $OutputDirectory,
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [string]
     $Token,
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [ValidatePattern("^(?<protocol>http(s)?)://(?<instance>[^/$]+(/[^/]+)*)(?<ending_slash>/?)|(?<empty_url>)$")]
     [string]
     $ServerUrl
@@ -61,14 +61,13 @@ function EnsureOutputDirectoryExists ($outputDirectory) {
 }
 
 function ParseErrorMessage ($err) {
-    $json = $err | ConvertFrom-Json
-    return $json.message
+    return $err | ConvertFrom-Json | Select-Object -ExpandProperty message
 }
 
 function GetServerUrlOrFallback ($serverUrl, $fallback) {
     $urlPattern = "^(?<protocol>http(s)?)://(?<instance>[^/$]+(/[^/]+)*)(?<ending_slash>/?)|(?<empty_url>)$"
 
-    if([string]::IsNullOrEmpty($serverUrl)) {
+    if ([string]::IsNullOrEmpty($serverUrl)) {
         return $fallback
     }
     
@@ -92,15 +91,12 @@ EnsureOutputDirectoryExists $OutputDirectory
 Write-Host "Downloading file '$FileName' from Maven package '$($GroupId)/$($ArtifactId)'..." -ForegroundColor Blue
 
 try {
+    Write-Verbose "Requesting '$uri' with token '$token'..."
+
     Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = $token } -OutFile "$OutputDirectory\$FileName"
     Write-Host "Successfully downloaded file '$FileName' to directory '$OutputDirectory'." -ForegroundColor Green
-}catch [Microsoft.PowerShell.Commands.HttpResponseException] {
-    if ($_.Exception.Response.StatusCode -eq [System.Net.HttpStatusCode]::Unauthorized) {
-        Write-Host "Failed to download file '$FileName' from Maven package '$($GroupId)/$($ArtifactId)'. Reason: $(ParseErrorMessage $_.ErrorDetails.Message)" -ForegroundColor Red
-        exit 1
-    }
-
-    throw
 }
-
-Write-Host "Done." -ForegroundColor Green
+catch [Microsoft.PowerShell.Commands.HttpResponseException] {
+    Write-Host "Failed to download file '$FileName' from Maven package '$($GroupId)/$($ArtifactId)'. Reason: $(ParseErrorMessage $_.ErrorDetails.Message)" -ForegroundColor Red
+    exit 1
+}

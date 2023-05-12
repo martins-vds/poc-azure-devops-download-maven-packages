@@ -22,10 +22,11 @@ variables:
   SERVER_URL: 'https://pkgs.dev.azure.com'
 
 steps:
-- task: PowerShell@2
+- pwsh: PowerShell@2
   env:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
+    pwsh: true
     filePath: 'Download-MavenPackage.ps1'
     arguments: '-Organization "$(ORG)" -FeedId "$(FEED_ID)" -GroupId "$(GROUP_ID)" -ArtifactId "$(ARTIFACT_ID)" -Version "$(VERSION)" -FileName "$(FILENAME)" -OutputDirectory "$(System.ArtifactsDirectory)\powershell" -ServerUrl "$(SERVER_URL)"'
 - task: DownloadPackage@1
