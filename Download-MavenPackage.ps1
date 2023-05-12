@@ -4,6 +4,9 @@ param (
     [ValidateNotNullOrEmpty()]
     [string]
     $Organization,
+    [Parameter(Mandatory=$false)]
+    [string]
+    $ProjectId,
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string]
@@ -33,7 +36,11 @@ param (
     [Parameter(Mandatory = $false)]
     [ValidatePattern("^(?<protocol>http(s)?)://(?<instance>[^/$]+(/[^/]+)*)(?<ending_slash>/?)|(?<empty_url>)$")]
     [string]
-    $ServerUrl
+    $ServerUrl,    
+    [Parameter(Mandatory = $false)]
+    [ValidateSet("5.1-preview.1", "6.0-preview.1", "7.0-preview.1", IgnoreCase = $true)]
+    [string]
+    $ApiVersion = "7.0-preview.1"
 )
 
 function EncodeBase64 ($text) {
@@ -86,10 +93,19 @@ function GetServerUrlOrFallback ($serverUrl, $fallback) {
     return "$($protocol)://$($instance)"
 }
 
+function GetFeedUrl ($serverUrl, $organization, $projectId, $feedId) {
+    if ([string]::IsNullOrEmpty($projectId)) {
+        return "$($serverUrl)/$($organization)/_apis/packaging/feeds/$($feedId)"
+    }
+
+    return "$($serverUrl)/$($organization)/$($projectId)/_apis/packaging/feeds/$($feedId)"
+}
+
 $ErrorActionPreference = "Stop"
 
 $token = GetAccessTokenOrFallback $Token $env:SYSTEM_ACCESSTOKEN
-$uri = "$(GetServerUrlOrFallback $ServerUrl "https://pkgs.dev.azure.com")/$Organization/_apis/packaging/feeds/$FeedId/maven/$GroupId/$ArtifactId/$Version/$FileName/content?api-version=7.0-preview.1"
+$feedUrl = GetFeedUrl $(GetServerUrlOrFallback $ServerUrl "https://pkgs.dev.azure.com") $Organization $ProjectId $FeedId
+$uri = "$feedUrl/maven/$GroupId/$ArtifactId/$Version/$FileName/content?api-version=$ApiVersion"
 
 EnsureOutputDirectoryExists $OutputDirectory
 
