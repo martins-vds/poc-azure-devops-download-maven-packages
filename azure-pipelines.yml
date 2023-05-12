@@ -22,7 +22,7 @@ variables:
   SERVER_URL: 'https://pkgs.dev.azure.com'
 
 steps:
-- pwsh: PowerShell@2
+- task: PowerShell@2
   env:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
