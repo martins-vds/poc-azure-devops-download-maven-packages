@@ -61,7 +61,12 @@ function EnsureOutputDirectoryExists ($outputDirectory) {
 }
 
 function ParseErrorMessage ($err) {
-    return $err | ConvertFrom-Json | Select-Object -ExpandProperty message
+    try {
+        return $err | ConvertFrom-Json | Select-Object -ExpandProperty message
+    }
+    catch {
+        return $err
+    }
 }
 
 function GetServerUrlOrFallback ($serverUrl, $fallback) {
