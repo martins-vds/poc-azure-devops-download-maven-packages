@@ -26,6 +26,7 @@ variables:
 
 steps:
 - task: PowerShell@2
+  displayName: 'Download Maven Package using PowerShell script'
   env:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
@@ -33,6 +34,7 @@ steps:
     filePath: 'Download-MavenPackage.ps1'
     arguments: '-Organization "$(ORG)" -ProjectId "$(PROJECT)" -FeedId "$(FEED_ID)" -GroupId "$(GROUP_ID)" -ArtifactId "$(ARTIFACT_ID)" -Version "$(VERSION)" -FileName "$(FILENAME)" -OutputDirectory "$(System.ArtifactsDirectory)\powershell" -ServerUrl "$(SERVER_URL)"'
 - task: DownloadPackage@1
+  displayName: 'Download Maven Package using built-in task'
   inputs:
     packageType: 'maven'
     feed: '/8aec59e1-6117-46e0-9b4b-148f6a7eecc7'
@@ -42,4 +44,5 @@ steps:
     files: 'myFirstApp-1.0-20230508.222359-1.jar'
     downloadPath: '$(System.ArtifactsDirectory)\task'
 - publish: $(System.ArtifactsDirectory)
+  displayName: 'Publish both downloaded packages as artifacts for comparison'
   artifact: maven-$(FILENAME)
